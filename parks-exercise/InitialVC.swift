@@ -26,6 +26,13 @@ class InitialVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        numberOfParks.hidden = true
+        parks = []
+        downloadParksInfo {
+        self.numberOfParks.hidden = false
+        self.tableView.reloadData()
+        self.numberOfParks.text = "THERE CURRENTLY ARE \(self.parks.count) PARKS RECORDED"
+        }
     }
     
     
@@ -55,9 +62,11 @@ class InitialVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     //MARK: - IBActions
     
     @IBAction func onReloadBtnPressed(sender: UIButton) {
-        downloadParksInfo { 
-            self.tableView.reloadData()
-            self.numberOfParks.text = "THERE CURRENTLY ARE \(self.parks.count) PARKS RECORDED"
+          parks = []
+          downloadParksInfo {
+          self.numberOfParks.hidden = false
+          self.tableView.reloadData()
+          self.numberOfParks.text = "THERE CURRENTLY ARE \(self.parks.count) PARKS RECORDED"
         }
     }
 
@@ -69,7 +78,8 @@ class InitialVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         var lat: String!
         var long: String!
         var desc: String!
-        
+      
+      
         let url = NSURL(string: URL_BASE)!
         Alamofire.request(.GET, url).responseJSON(completionHandler: { response in
             let result = response.result
@@ -94,6 +104,7 @@ class InitialVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
                 }
             }
             completed()
+          self.numberOfParks.hidden = false
         })
     }
     
